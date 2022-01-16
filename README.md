@@ -1,8 +1,7 @@
 # React New
 
 ### Using:
-
-- Styled Components
+- Styled Components[https://styled-components.com/docs/api]
 - Recoil
 - React Query
 - React Router DOM
