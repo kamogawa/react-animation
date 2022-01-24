@@ -5,7 +5,7 @@ import { fetchCoins } from "../api";
 
 const Container = styled.div`
   padding: 0px 20px;
-  max-width: 480px;
+  max-width: 1000px;
   margin: 0 auto;
 `;
 
@@ -16,13 +16,11 @@ const Header = styled.header`
   align-items: center;
 `;
 
-const CoinsList = styled.ul``;
-
-const Coin = styled.li`
+const Coin = styled.div`  
   background-color: white;
   color: ${(props) => props.theme.bgColor};
   border-radius: 15px;
-  margin-bottom: 10px;
+  margin: 10px;
   a {
     display: flex;
     align-items: center;
@@ -34,6 +32,11 @@ const Coin = styled.li`
       color: ${(props) => props.theme.accentColor};
     }
   }
+`;
+
+const CoinsList = styled.span`
+  display: flex;
+  flex-wrap: wrap;
 `;
 
 const Title = styled.h1`
