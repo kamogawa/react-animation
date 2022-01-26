@@ -22,7 +22,7 @@ export interface ICoin {
  * COIN DTAIL
 ​ */
 
-export async function fetchCoinInfo(coinId: string) {
+export async function fetchCoinDetail(coinId: string) {
   const response = await fetch(`${BASE_URL}/coins/${coinId}`);
   return await response.json();
 }
@@ -50,7 +50,15 @@ export interface InfoData {
 /*
  * TICKERS
 ​ */
-export async function fetchCoinTickers(coinId: string) {
+export async function fetchCoinTickers() {
+  const response = await fetch(`${BASE_URL}/tickers`);
+  return await response.json();
+}
+
+/*
+ * TICKER DETAIL
+​ */
+export async function fetchCoinTickerDetail(coinId: string) {
   const response = await fetch(`${BASE_URL}/tickers/${coinId}`);
   return await response.json();
 }

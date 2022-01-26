@@ -1,8 +1,9 @@
 import { useQuery } from "react-query";
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoins, ICoin } from "../api";
-import OverviewItem from "./component/OverviewItem";
+import TopOverviewItem from "./component/TopOverviewItem";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -60,43 +61,25 @@ const Img = styled.img`
   margin-right: 10px;
 `;
 
-const Price = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  width: 260px;
-  height: 70px;
-  background-color: whitesmoke;
-  margin-top: -5px;
-  margin-left: 20px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-`;
-
-
 function Coins() {
-  const { isLoading, data: allCoins } = useQuery<ICoin[]>("allCoins", fetchCoins);
+  const { isLoading: isCoinLoading, data: allCoins } = useQuery<ICoin[]>("allCoins", fetchCoins);
 
   return (
     <Container>
       <Header>
-        <Title>Coins</Title>
+        <Title>Coin Tracker</Title>
       </Header>
-      {isLoading ? (
+      {isCoinLoading ? (
         <Loader>Loading...</Loader>
       ) : (
         <CoinsList>
-          {allCoins?.slice(0, 18).map((coin) => (
+          {allCoins?.slice(0, 12).map((coin) => (
             <Coin key={coin.id}>
               <Link to={{ pathname: `/${coin.id}`, state: { name: coin.name }}}>
                 <Img src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
                 {coin.name} &rarr;
               </Link>
-              <Price>
-                <OverviewItem title="price" item={32232131.11} column={2}/>
-                <OverviewItem title="24H Change %" item="+4.2%" column={2}/>
-              </Price>
+              <TopOverviewItem coinId={coin.id}/>
             </Coin>
           ))}
         </CoinsList>

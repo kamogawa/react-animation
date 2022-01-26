@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { Helmet } from "react-helmet";
 import {
   Switch,
   Route,
@@ -8,7 +9,7 @@ import {
 } from "react-router-dom";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { fetchCoinInfo, fetchCoinTickers, PriceData, InfoData } from "../api";
+import { fetchCoinTickerDetail, PriceData, InfoData, fetchCoinDetail } from "../api";
 import Chart from "./Chart";
 import OverviewItem from "./component/OverviewItem";
 import Price from "./Price";
@@ -43,19 +44,6 @@ const Overview = styled.div`
   padding: 10px 20px;
   border-radius: 10px;
 `;
-
-// const OverviewItem = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   width: 33%;
-//   span:first-child {
-//     font-size: 12px;
-//     font-weight: 400;
-//     text-transform: uppercase;
-//     margin-bottom: 5px;
-//   }
-// `;
 
 const Description = styled.p`
   margin: 20px 3px;
@@ -101,16 +89,21 @@ function Coin() {
 
   const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
     ["info", coinId],
-    () => fetchCoinInfo(coinId)
+    () => fetchCoinDetail(coinId)
   );
   const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
     ["tickers", coinId],
-    () => fetchCoinTickers(coinId)
+    () => fetchCoinTickerDetail(coinId)
   );
   const loading = infoLoading || tickersLoading;
 
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
+        </title>
+      </Helmet>
       <Header>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
@@ -121,14 +114,14 @@ function Coin() {
       ) : (
         <>
           <Overview>
-            <OverviewItem title="Rank:" item={infoData?.rank} column={3}/>
-            <OverviewItem title="Symbol:" item={infoData?.symbol} column={3}/>
-            <OverviewItem title="Open Source:" item={infoData?.open_source ? "Yes" : "No"} column={3}/>
+            <OverviewItem title="Rank:" item={infoData?.rank}/>
+            <OverviewItem title="Symbol:" item={infoData?.symbol}/>
+            <OverviewItem title="Price:" item={tickersData?.quotes.USD.price.toFixed(3)}/>
           </Overview>
           <Description>{infoData?.description}</Description>
           <Overview>
-            <OverviewItem title="Total Suply:" item={tickersData?.total_supply} column={3}/>
-            <OverviewItem title="Max Supply:" item={tickersData.max_supply} column={3}/>
+            <OverviewItem title="Total Suply:" item={tickersData?.total_supply}/>
+            <OverviewItem title="Max Supply:" item={tickersData.max_supply}/>
           </Overview>
           {/* Taps */}
           <Tabs>
