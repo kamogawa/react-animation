@@ -121,7 +121,7 @@ function Coin() {
           <Description>{infoData?.description}</Description>
           <Overview>
             <OverviewItem title="Total Suply:" item={tickersData?.total_supply}/>
-            <OverviewItem title="Max Supply:" item={tickersData.max_supply}/>
+            <OverviewItem title="Max Supply:" item={tickersData?.max_supply}/>
           </Overview>
           {/* Taps */}
           <Tabs>

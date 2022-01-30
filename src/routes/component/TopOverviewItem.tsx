@@ -33,7 +33,7 @@ const Price = styled.div`
   padding: 10px 20px;
   width: 260px;
   height: 90px;
-  background-color: whitesmoke;
+  background-color: gainsboro;
   margin-top: -5px;
   margin-left: 20px;
   margin-bottom: 20px;
