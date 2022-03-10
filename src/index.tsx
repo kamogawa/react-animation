@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { QueryClient, QueryClientProvider } from "react-query";
 import { RecoilRoot } from "recoil";
 import App from './App';
+import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 const queryClient = new QueryClient();
 

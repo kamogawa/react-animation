@@ -13,6 +13,7 @@ import { fetchCoinTickerDetail, PriceData, InfoData, fetchCoinDetail } from "../
 import Chart from "./Chart";
 import OverviewItem from "./component/OverviewItem";
 import Price from "./Price";
+import Navi from "./component/NaviTest";
 
 const Title = styled.h1`
   font-size: 48px;

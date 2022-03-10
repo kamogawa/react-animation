@@ -63,7 +63,7 @@ function TopOverviewItem({ coinId }: TopOverviewProps) {
         <>
           <Overview>
             <span>price</span>
-            <span>${data?.quotes.USD.price.toFixed(2)}</span>
+            <span>${data?.quotes.USD?.price.toFixed(2)}</span>
           </Overview>
           <Overview>
             <span>24H Change %</span>

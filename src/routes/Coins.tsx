@@ -3,10 +3,12 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import { Button } from 'react-bootstrap';
 
 import { fetchCoins, ICoin } from "../api";
 import { isDarkAtom } from "../atoms";
 import TopOverviewItem from "./component/TopOverviewItem";
+import NaviTest from "./component/NaviTest";
 
 
 const Container = styled.div`
@@ -72,21 +74,23 @@ function Coins() {
   const { isLoading: isCoinLoading, data: allCoins } = useQuery<ICoin[]>("allCoins", fetchCoins);
 
   return (
+    <>    <NaviTest />
+
     <Container>
       <Helmet>
         <title>Coin Tracker</title>
       </Helmet>
       <Header>
         <Title>Coin Tracker</Title>
-        <button onClick={toggleDarkAtom}>Toggle Mode</button>
+        <Button onClick={toggleDarkAtom}>Toggle Mode</Button>
       </Header>
       {isCoinLoading ? (
         <Loader>Loading...</Loader>
       ) : (
         <CoinsList>
-          {allCoins?.slice(0, 3).map((coin) => (
+          {allCoins?.slice(0, 9).map((coin) => (
             <Coin key={coin.id}>
-              <Link to={{ pathname: `/${coin.id}`, state: { name: coin.name }}}>
+              <Link to={{ pathname: `/react_new/${coin.id}`, state: { name: coin.name }}}>
                 <Img src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
                 {coin.name} &rarr;
               </Link>
@@ -96,6 +100,8 @@ function Coins() {
         </CoinsList>
       )}
     </Container>
+    </>
+
   );
 }
 
