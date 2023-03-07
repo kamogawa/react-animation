@@ -3,13 +3,8 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { Button } from 'react-bootstrap';
-
 import { fetchCoins, ICoin } from "../api";
 import { isDarkAtom } from "../atoms";
-import TopOverviewItem from "./component/TopOverviewItem";
-import NaviTest from "./component/NaviTest";
-
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -30,10 +25,11 @@ const Coin = styled.div`
   background-color: ${(props) => props.theme.cardBgColor};
   color: ${(props) => props.theme.textColor};
   border-radius: 15px;
-  margin: 10px;
-  width: 300px;
+  margin: 12px;
+  width: 120px;
   border: 1px solid white;
   a {
+    flex-direction: column;
     display: flex;
     align-items: center;
     padding: 20px;
@@ -47,6 +43,7 @@ const Coin = styled.div`
 `;
 
 const CoinsList = styled.span`
+  margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -63,9 +60,27 @@ const Loader = styled.span`
 `;
 
 const Img = styled.img`
-  width: 35px;
-  height: 35px;
-  margin-right: 10px;
+  width: 85px;
+  height: 85px;
+`;
+
+// const CoinLink = styled(Link)``;
+
+const CoinName = styled.span`
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: -webkit-center;
+  width: 90px;
+  &:hover {
+    white-space: normal;
+    width: auto;
+    overflow: visible;
+    text-overflow: clip;
+  }
 `;
 
 function Coins() {
@@ -74,34 +89,29 @@ function Coins() {
   const { isLoading: isCoinLoading, data: allCoins } = useQuery<ICoin[]>("allCoins", fetchCoins);
 
   return (
-    <>    <NaviTest />
-
-    <Container>
-      <Helmet>
-        <title>Coin Tracker</title>
-      </Helmet>
-      <Header>
-        <Title>Coin Tracker</Title>
-        <Button onClick={toggleDarkAtom}>Toggle Mode</Button>
-      </Header>
-      {isCoinLoading ? (
-        <Loader>Loading...</Loader>
-      ) : (
-        <CoinsList>
-          {allCoins?.slice(0, 9).map((coin) => (
-            <Coin key={coin.id}>
-              <Link to={{ pathname: `/react_new/${coin.id}`, state: { name: coin.name }}}>
-                <Img src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
-                {coin.name} &rarr;
-              </Link>
-              <TopOverviewItem coinId={coin.id}/>
-            </Coin>
-          ))}
-        </CoinsList>
-      )}
-    </Container>
+    <>
+      <Container>
+        <Helmet>
+          <title>Coin Tracker</title>
+        </Helmet>
+        {isCoinLoading ? (
+          <Loader>Loading...</Loader>
+        ) : (
+          <CoinsList>
+            {allCoins?.slice(0, 100).map((coin) => (
+              <Coin key={coin.id}>
+                <Link to={{ pathname: `/react_new/${coin.id}`, state: { name: coin.name }}}>
+                  <Img src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
+                  <CoinName>{coin.name}</CoinName>
+                </Link>
+                {/* 무료api에서는 시간당 리퀘스트 제한이 있기 때문에 설정 제외 */}
+                {/* <TopOverviewItem coinId={coin.id}/> */}
+              </Coin>
+            ))}
+          </CoinsList>
+        )}
+      </Container>
     </>
-
   );
 }
 

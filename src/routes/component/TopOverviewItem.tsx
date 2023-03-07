@@ -1,3 +1,5 @@
+//사용중지
+
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { fetchCoinTickerDetail, PriceData } from "../../api";
@@ -52,8 +54,8 @@ function TopOverviewItem({ coinId }: TopOverviewProps) {
     //   refetchInterval: 60000,
     // }
   );
-  const rateOneDay = data?.quotes.USD.percent_change_24h;
-  const change_price =  rateOneDay < 0 ? 'red' : rateOneDay == 0 ? 'black' : 'limegreen';
+  const rateOneDay = data?.quotes.USD.percent_change_24h || 0;
+  const change_price =  rateOneDay < 0 ? 'red' : rateOneDay === 0 ? 'black' : 'limegreen';
 
   return (
     <Price>
@@ -66,8 +68,8 @@ function TopOverviewItem({ coinId }: TopOverviewProps) {
             <span>${data?.quotes.USD?.price.toFixed(2)}</span>
           </Overview>
           <Overview>
-            <span>24H Change %</span>
-            <Rate color={change_price}>{data?.quotes.USD.percent_change_24h}</Rate>
+            <span>24H Change</span>
+            <Rate color={change_price}>{data?.quotes.USD.percent_change_24h} %</Rate>
           </Overview>
         </>
       )}

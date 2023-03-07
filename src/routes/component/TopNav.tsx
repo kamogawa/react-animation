@@ -1,10 +1,11 @@
+import React from "react";
 import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
 
-function NaviTest() {
+function TopNav() {
   return (
     <Navbar sticky="top" bg="light" expand="lg">
       <Container>
-        <Navbar.Brand href="/">Coin Tracker</Navbar.Brand>
+        <Navbar.Brand href="/coin_ticker">Coin Tracker</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="me-auto">
@@ -24,4 +25,4 @@ function NaviTest() {
   );
 }
 
-export default NaviTest;
+export default TopNav;

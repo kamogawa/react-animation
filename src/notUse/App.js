@@ -47,8 +47,7 @@ const Box = styled.div`
 `;
 const Input = styled.input.attrs(props => ({
   maxLength: props.test ? 5 :10,
-}))`
-`
+}));
 
 const Circle = styled(Box)`
   border-radius: 50px;

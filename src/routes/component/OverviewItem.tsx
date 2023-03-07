@@ -1,8 +1,9 @@
+import React from "react";
 import styled from "styled-components";
 
 interface OverviewProps {
   title: string;
-  item: string | number;
+  item: string | number | undefined;
 }
 
 const Overview = styled.div`
