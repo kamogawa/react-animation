@@ -1,22 +1,13 @@
+import styled from "styled-components";
 import { useQuery } from "react-query";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import styled from "styled-components";
 import { fetchCoins, ICoin } from "../api";
-import { isDarkAtom } from "../atoms";
 
 const Container = styled.div`
   padding: 0px 20px;
   max-width: 1000px;
   margin: 0 auto;
-`;
-
-const Header = styled.header`
-  height: 15vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const Coin = styled.div`  
@@ -49,22 +40,25 @@ const CoinsList = styled.span`
   justify-content: center;
 `;
 
-const Title = styled.h1`
-  font-size: 48px;
-  color: ${(props) => props.theme.accentColor};
-`;
-
-const Loader = styled.span`
+const Loader = styled.div`
+  position: relative;
+  font-size: 50px;
   text-align: center;
-  display: block;
+  height: 90vh;
+  color: ${(props) => props.theme.contrastTextColor};
+  font-weight: bolder;
+  span{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
 `;
 
 const Img = styled.img`
   width: 85px;
   height: 85px;
 `;
-
-// const CoinLink = styled(Link)``;
 
 const CoinName = styled.span`
   margin-top: 10px;
@@ -84,8 +78,6 @@ const CoinName = styled.span`
 `;
 
 function Coins() {
-  const setDarkAtom = useSetRecoilState(isDarkAtom);
-  const toggleDarkAtom = () => setDarkAtom((prev) => !prev);
   const { isLoading: isCoinLoading, data: allCoins } = useQuery<ICoin[]>("allCoins", fetchCoins);
 
   return (
@@ -95,12 +87,12 @@ function Coins() {
           <title>Coin Tracker</title>
         </Helmet>
         {isCoinLoading ? (
-          <Loader>Loading...</Loader>
+          <Loader><span>Loading...</span></Loader>
         ) : (
           <CoinsList>
             {allCoins?.slice(0, 100).map((coin) => (
               <Coin key={coin.id}>
-                <Link to={{ pathname: `/react_new/${coin.id}`, state: { name: coin.name }}}>
+                <Link to={{ pathname: `/coin_tracker/${coin.id}`, state: { name: coin.name }}}>
                   <Img src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
                   <CoinName>{coin.name}</CoinName>
                 </Link>

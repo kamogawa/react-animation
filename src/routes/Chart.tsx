@@ -3,6 +3,7 @@ import { fetchCoinHistory, IHistorical } from "../api";
 import ApexChart from "react-apexcharts";
 import { useRecoilValue } from "recoil";
 import { isDarkAtom } from "../atoms";
+import styled from "styled-components";
 
 interface ChartProps {
   coinId: string;
@@ -12,17 +13,33 @@ function Chart({ coinId }: ChartProps) {
   const { isLoading, data } = useQuery<IHistorical[]>(["ohlcv", coinId], () =>
     fetchCoinHistory(coinId)
   );
+
+  const Loader = styled.span`
+    position: relative;
+    font-size: 20px;
+    text-align: center;
+    height: 90vh;
+    color: ${(props) => props.theme.contrastTextColor};
+    font-weight: bolder;
+  `;
+
   return (
     <div>
       {isLoading ? (
-        "Loading chart..."
+        <Loader>Loading...</Loader>
       ) : (
         <ApexChart
-          type="line"
+          type="candlestick"
           series={[
             {
               name: "Price",
-              data: data?.map((price) => price.close),
+              data: data?.map((price) => {
+                return {
+                  x: new Date(price.time_open),
+                  y: [price.open, price.high, price.low, price.close]
+                }
+              
+              }),
             },
           ]}
           options={{
@@ -38,31 +55,15 @@ function Chart({ coinId }: ChartProps) {
               background: "transparent",
             },
             grid: { show: false },
-            stroke: {
-              curve: "smooth",
-              width: 4,
-            },
             yaxis: {
               show: false,
             },
             xaxis: {
-              axisBorder: { show: false },
-              axisTicks: { show: false },
-              labels: { show: false },
               type: "datetime",
               categories: data?.map((price) => price.time_close),
-            },
-            fill: {
-              type: "gradient",
-              gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
-            },
-            colors: ["#0fbcf9"],
-            tooltip: {
-              y: {
-                formatter: (value) => `$${value.toFixed(2)}`,
-              },
-            },
+            }
           }}
+          height={350}
         />
       )}
     </div>
