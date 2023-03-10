@@ -3,8 +3,6 @@ import Coin from "./routes/Coin";
 import Coins from "./routes/Coins";
 import TopNav from "./routes/component/TopNav";
 
-const PUBLIC_URL = "http://kamogawa.github.io/coin_tracker"
-
 function Router() {
   return (
     <BrowserRouter>

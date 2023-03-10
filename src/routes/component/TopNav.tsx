@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { useSetRecoilState, useRecoilValue } from "recoil";
-import { isDarkAtom } from "../../atoms";
-import { Navbar, Container, Nav, NavDropdown, Button } from 'react-bootstrap';
+import { Navbar, Container, Nav } from 'react-bootstrap';
 import { Moon } from '@styled-icons/bootstrap/Moon'
 import { SunFill } from '@styled-icons/bootstrap/SunFill'
 import { Link } from "react-router-dom";
+import { isDarkAtom } from "../../atoms";
 
 const Title = styled(Link)`
   &:hover {
