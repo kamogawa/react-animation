@@ -4,14 +4,13 @@ import { RecoilRoot } from "recoil";
 import { ThemeProvider } from "styled-components";
 import App from "./App";
 import { darkTheme } from "./theme";
+import 'bootstrap/dist/css/bootstrap.css';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <RecoilRoot>
-      <ThemeProvider theme={darkTheme}>
-        <App />
-      </ThemeProvider>
-    </RecoilRoot>
-  </React.StrictMode>,
+  <RecoilRoot>
+    <ThemeProvider theme={darkTheme}>
+      <App />
+    </ThemeProvider>
+  </RecoilRoot>,
   document.getElementById("root")
 );
