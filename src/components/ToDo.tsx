@@ -1,14 +1,15 @@
-import React from "react";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { Categories, IToDo, toDoState } from "../atoms";
 import { PencilFill } from '@styled-icons/bootstrap/PencilFill'
 import { ClipboardCheckFill } from '@styled-icons/bootstrap/ClipboardCheckFill'
 import { ClipboardXFill } from '@styled-icons/bootstrap/ClipboardXFill'
+import { TrashFill } from '@styled-icons/bootstrap/TrashFill'
+import { IToDo, toDoState } from "../atoms";
 
 const Doing = styled(PencilFill)`
-  height: 35px;
+  height: 30px;
   color: coral;
+  margin-left: 5px;
   &:hover {
     opacity: 0.5 ;
     cursor: pointer;
@@ -16,8 +17,19 @@ const Doing = styled(PencilFill)`
 `
 
 const Done = styled(ClipboardCheckFill)`
-  height: 35px;
+  height: 30px;
   color: greenyellow;
+  margin-left: 5px;
+
+  &:hover {
+    opacity: 0.5 ;
+    cursor: pointer;
+  }
+`
+const Delete = styled(TrashFill)`
+  height: 30px;
+  color: darkgray;
+  margin-left: 5px;
   &:hover {
     opacity: 0.5 ;
     cursor: pointer;
@@ -25,18 +37,19 @@ const Done = styled(ClipboardCheckFill)`
 `
 
 const Todo = styled(ClipboardXFill)`
-  height: 35px;
+  height: 30px;
   color: gold;
+  margin-left: 5px;
+
   &:hover {
     opacity: 0.5 ;
     cursor: pointer;
   }
 `
-
-
 const ListItem = styled.li`
   display: flex;
   justify-content: space-between;
+  margin-bottom: 8px;
 `;
 
 function ToDo({ text, category, id }: IToDo) {
@@ -52,23 +65,30 @@ function ToDo({ text, category, id }: IToDo) {
       ];
     });
   };
+
+  const deleteToDo = () => {
+    setToDos((oldToDos: IToDo[]) => {
+      const newToDos = oldToDos.filter(
+        (todo) => todo.id !== id
+      );
+      return newToDos;
+    });
+  };
+
   return (
     <ListItem>
       <span>{text}</span>
       <span>
-        {category !== Categories.DOING && (
-          <Doing onClick={() => onClick(Categories.DOING)} />
+        {category !== "TODO" && (
+          <Todo onClick={() => onClick("TODO")} />
         )}
-        {category !== Categories.TO_DO && (
-          <Todo onClick={() => onClick(Categories.TO_DO)} >
-            To Do
-          </Todo>
+        {category !== "DOING" && (
+          <Doing onClick={() => onClick("DOING")} />
         )}
-        {category !== Categories.DONE && (
-          <Done onClick={() => onClick(Categories.DONE)} >
-            Done
-          </Done>
+        {category !== "DONE" && (
+          <Done onClick={() => onClick("DONE")} />
         )}
+        <Delete onClick={deleteToDo}/>
       </span>
     </ListItem>
   );

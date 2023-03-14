@@ -1,11 +1,21 @@
 import React, { useState } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { Categories, categoryState, IToDo, toDoSelector, toDoState } from "../atoms";
-import CreateToDo from "./CreateToDo";
-import ToDo from "./ToDo";
-import { Card, InputGroup, Form, Button, Modal } from 'react-bootstrap';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { InputGroup, Form, Button, Modal } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
+import { TrashFill } from '@styled-icons/bootstrap/TrashFill'
+import { Categories, categoryState, IToDo, toDoSelector, toDoState } from "../atoms";
+import ToDo from "./ToDo";
+
+const Delete = styled(TrashFill)`
+  height: 25px;
+  color: darkgray;
+  margin-left: 5px;
+  &:hover {
+    opacity: 0.5 ;
+    cursor: pointer;
+  }
+`
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -28,9 +38,20 @@ const CategoryModal = styled(Modal)`
 `
 
 const InputItems = styled(InputGroup)`
-  margin-bottom: 10px;
-  /* max-width: 50%; */
+  margin-bottom: 15px;
+  margin-top: 10px;
 `
+
+const ListItem = styled.li`
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  margin-left: 8px;
+  span {
+    margin-top: auto;
+  }
+`;
 
 interface IForm {
   toDo: string;
@@ -39,56 +60,72 @@ interface IForm {
 function ToDoList() {
   const toDos = useRecoilValue(toDoSelector);
   const [category, setCategory] = useRecoilState(categoryState);
+  const [categories, setCategories] = useRecoilState(Categories);
   const onInput = (event: React.FormEvent<HTMLSelectElement>) => {
-    console.log(event.currentTarget.value);
     setCategory(event.currentTarget.value as IToDo["category"]);
   }
-
   const setToDos = useSetRecoilState(toDoState);
-  // const category = useRecoilValue(categoryState);
+  
+  //react-hook-form
   const { register, handleSubmit, setValue } = useForm<IForm>();
   const handleValid = ({ toDo }: IForm) => {
-    setToDos((oldToDos) => [
-      { text: toDo, id: Date.now(), category },
-      ...oldToDos,
-    ]);
+    if (toDo) {
+      setToDos((oldToDos) => [
+        { text: toDo, id: Date.now(), category },
+        ...oldToDos,
+      ]);
+    }
     setValue("toDo", "");
   };
 
+  //모달 표시
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  //모달 input
+  const [modalCategory, setModalCategory] = useState("");
+  const onChangeModal = (event: any) => {
+    const {
+      currentTarget: { value },
+    } = event;
+    setModalCategory(value);
+  };
+
+  //모달 카테고리 추가
+  const addCategories = () => {
+    const reg = /^TODO|DOING|DONE$/;
+    const reg2 = reg.test(modalCategory);
+    if (modalCategory) {
+      setCategories((oldCate) => [
+        ...oldCate,
+        modalCategory
+      ]);
+    }
+  };
+
+  //모달 카테고리 삭제
+  const deleteCategories = (v: string) => {
+    setCategories((oldToDos: string[]) => {
+      const newToDos = oldToDos.filter(
+        (category) => category !== v
+      );
+      return newToDos;
+    });
+  };
+
+  const isIncludes = (target: string) => ["TODO", "DOING", "DONE"].some(el => target.includes(el));
 
   return (
     <Container>
       <Title>TODO LIST</Title>
       <form onSubmit={handleSubmit(handleValid)}>
-        {/* <InputItems>
-          <BootSelect value={category} onInput={onInput}>
-            <option value={Categories.TO_DO}>To Do</option>
-            <option value={Categories.DOING}>Doing</option>
-            <option value={Categories.DONE}>Done</option>
-          </BootSelect>
-          <Form.Control {...register("toDo", {
-              required: "Please write a To Do",
-            })}
-            placeholder="Write a to do" />
-          <Button type="submit" variant="secondary">
-            Add
-          </Button>
-          <Button onClick={handleShow} variant="secondary">
-            Category Update
-          </Button>
-        </InputItems> */}
-
         <InputItems>
           <BootSelect value={category} onInput={onInput}>
-            <option value={Categories.TO_DO}>To Do</option>
-            <option value={Categories.DOING}>Doing</option>
-            <option value={Categories.DONE}>Done</option>
+            {categories.map((v, i) => <option key={i} value={v}>{v}</option>)}
           </BootSelect>
           <Button onClick={handleShow} variant="secondary">
-            Category Update
+            Add Category
           </Button>
         </InputItems>
         <InputItems>
@@ -108,17 +145,25 @@ function ToDoList() {
 
       <CategoryModal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Categories</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
+        <Modal.Body>
+          {categories.map((v, i) => 
+            <ListItem key={i} value={v}>      
+              <span>{v}</span>
+              {!isIncludes(v) ? <Delete onClick={() => deleteCategories(v)}/> : ''}
+            </ListItem>
+          )}
+          <InputItems>
+            <Form.Control
+              onChange={onChangeModal}
+              value={modalCategory}
+              placeholder="Write a Category" />
+            <Button onClick={addCategories} variant="secondary">
+              Add Category
+            </Button>
+          </InputItems>          
+        </Modal.Body>
       </CategoryModal>
     </Container>
   );
