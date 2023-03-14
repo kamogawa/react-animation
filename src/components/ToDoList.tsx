@@ -53,6 +53,11 @@ const ListItem = styled.li`
   }
 `;
 
+const Error = styled.span`
+  color: lightcoral;
+  font-weight: bolder;
+`;
+
 interface IForm {
   toDo: string;
 }
@@ -65,9 +70,14 @@ function ToDoList() {
     setCategory(event.currentTarget.value as IToDo["category"]);
   }
   const setToDos = useSetRecoilState(toDoState);
-  
   //react-hook-form
-  const { register, handleSubmit, setValue } = useForm<IForm>();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors }
+  } = useForm<IForm>();
+
   const handleValid = ({ toDo }: IForm) => {
     if (toDo) {
       setToDos((oldToDos) => [
@@ -85,6 +95,8 @@ function ToDoList() {
 
   //모달 input
   const [modalCategory, setModalCategory] = useState("");
+  const [modalError, setModalError] = useState("");
+
   const onChangeModal = (event: any) => {
     const {
       currentTarget: { value },
@@ -94,13 +106,22 @@ function ToDoList() {
 
   //모달 카테고리 추가
   const addCategories = () => {
-    const reg = /^TODO|DOING|DONE$/;
-    const reg2 = reg.test(modalCategory);
+    if (!modalCategory) {
+      setModalError("카테고리를 입력하세요.");
+      return;
+    }
+    const reg = /TODO|DOING|DONE/;
+    if (reg.test(modalCategory)) {
+      setModalError("TODO, DOING, DONE이 포함된 카테고리는 입력할 수 없습니다.");
+      return;
+    }
+    setModalError("");
     if (modalCategory) {
       setCategories((oldCate) => [
         ...oldCate,
         modalCategory
       ]);
+      setModalCategory("");
     }
   };
 
@@ -130,13 +151,14 @@ function ToDoList() {
         </InputItems>
         <InputItems>
           <Form.Control {...register("toDo", {
-              required: "Please write a To Do",
+              required: "To Do를 입력하세요.",
             })}
-            placeholder="Write a to do" />
+            placeholder="To Do" />
           <Button type="submit" variant="secondary">
             Add
           </Button>
         </InputItems>
+        <Error>{errors?.toDo?.message}</Error>
       </form>
       <hr />
       {toDos?.map((toDo) => (
@@ -158,11 +180,12 @@ function ToDoList() {
             <Form.Control
               onChange={onChangeModal}
               value={modalCategory}
-              placeholder="Write a Category" />
+              placeholder="카테고리" />
             <Button onClick={addCategories} variant="secondary">
               Add Category
             </Button>
-          </InputItems>          
+          </InputItems>
+          <Error>{modalError}</Error>
         </Modal.Body>
       </CategoryModal>
     </Container>
