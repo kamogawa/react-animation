@@ -1,5 +1,5 @@
 {
-  "name": "react_todo",
+  "name": "react-netflix",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -64,5 +64,5 @@
     "gh-pages": "^3.2.3",
     "mini-css-extract-plugin": "2.4.5"
   },
-  "homepage": "http://kamogawa.github.io/react_todo"
+  "homepage": "http://kamogawa.github.io/react-netflix"
 }
