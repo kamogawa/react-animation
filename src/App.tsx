@@ -9,13 +9,13 @@ function App() {
     <Router>
       <Header />
       <Switch>
-        <Route path="/tv">
+        <Route path="/react-netflix/tv">
           <Tv />
         </Route>
-        <Route path="/search">
+        <Route path="/react-netflix/search">
           <Search />
         </Route>
-        <Route path="/">
+        <Route path="/react-netflix">
           <Home />
         </Route>
       </Switch>

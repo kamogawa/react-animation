@@ -1,119 +1,27 @@
-const BASE_URL = `https://api.coinpaprika.com/v1`;
+const BASE_PATH = "https://api.themoviedb.org/3";
+const API_KEY = process.env.REACT_APP_API_KEY;
 
-/*
- * COINS
-​ */
-export async function fetchCoins() {
-  const response = await fetch(`${BASE_URL}/coins`);
-  return await response.json();
+interface IMovie {
+  id: number;
+  backdrop_path: string;
+  poster_path: string;
+  title: string;
+  overview: string;
 }
 
-export interface ICoin {
-  id: string;
-  name: string;
-  symbol: string;
-  rank: number;
-  is_new: boolean;
-  is_active: boolean;
-  type: string;
-}
-
-/*
- * COIN DTAIL
-​ */
-
-export async function fetchCoinDetail(coinId: string) {
-  const response = await fetch(`${BASE_URL}/coins/${coinId}`);
-  return await response.json();
-}
-export interface InfoData {
-  id: string;
-  name: string;
-  symbol: string;
-  rank: number;
-  is_new: boolean;
-  is_active: boolean;
-  type: string;
-  description: string;
-  message: string;
-  open_source: boolean;
-  started_at: string;
-  development_status: string;
-  hardware_wallet: boolean;
-  proof_type: string;
-  org_structure: string;
-  hash_algorithm: string;
-  first_data_at: string;
-  last_data_at: string;
-}
-
-/*
- * TICKERS
-​ */
-export async function fetchCoinTickers() {
-  const response = await fetch(`${BASE_URL}/tickers`);
-  return await response.json();
-}
-
-/*
- * TICKER DETAIL
-​ */
-export async function fetchCoinTickerDetail(coinId: string) {
-  const response = await fetch(`${BASE_URL}/tickers/${coinId}`);
-  return await response.json();
-}
-
-export interface PriceData {
-  id: string;
-  name: string;
-  symbol: string;
-  rank: number;
-  circulating_supply: number;
-  total_supply: number;
-  max_supply: number;
-  beta_value: number;
-  first_data_at: string;
-  last_updated: string;
-  quotes: {
-    USD: {
-      ath_date: string;
-      ath_price: number;
-      market_cap: number;
-      market_cap_change_24h: number;
-      percent_change_1h: number;
-      percent_change_1y: number;
-      percent_change_6h: number;
-      percent_change_7d: number;
-      percent_change_12h: number;
-      percent_change_15m: number;
-      percent_change_24h: number;
-      percent_change_30d: number;
-      percent_change_30m: number;
-      percent_from_price_ath: number;
-      price: number;
-      volume_24h: number;
-      volume_24h_change_24h: number;
-    };
+export interface IGetMoviesResult {
+  dates: {
+    maximum: string;
+    minimum: string;
   };
+  page: number;
+  results: IMovie[];
+  total_pages: number;
+  total_results: number;
 }
 
-/*
- * HISTORICAL
-​ */
-export async function fetchCoinHistory(coinId: string) {
-  const response = await fetch(
-    `https://ohlcv-api.nomadcoders.workers.dev?coinId=${coinId}`
+export function getMovies() {
+  return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`).then(
+    (response) => response.json()
   );
-  return await response.json();
-}
-
-export interface IHistorical {
-  time_open: string;
-  time_close: string;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-  market_cap: number;
 }
