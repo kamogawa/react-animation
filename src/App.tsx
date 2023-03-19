@@ -15,7 +15,7 @@ function App() {
         <Route path="/react-netflix/search">
           <Search />
         </Route>
-        <Route path="/react-netflix">
+        <Route path={["/react-netflix", "/react-netflix/movies/:movieId"]}>
           <Home />
         </Route>
       </Switch>
