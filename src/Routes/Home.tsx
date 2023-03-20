@@ -10,7 +10,6 @@ import { ArrowRightCircleFill } from "@styled-icons/bootstrap/ArrowRightCircleFi
 
 const Wrapper = styled.div`
   background: black;
-  padding-bottom: 200px;
 `;
 
 const Loader = styled.div`
@@ -21,7 +20,7 @@ const Loader = styled.div`
 `;
 
 const Banner = styled.div<{ bgPhoto: string }>`
-  height: 100vh;
+  height: 95vh;
   display: flex;
   flex-direction: column;
   justify-content: center;

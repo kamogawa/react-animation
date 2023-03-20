@@ -1,7 +1,7 @@
 const BASE_PATH = "https://api.themoviedb.org/3";
 const API_KEY = process.env.REACT_APP_API_KEY;
 
-interface ITv {
+export interface ITv {
   id: number;
   name: string;
   backdrop_path: string;
