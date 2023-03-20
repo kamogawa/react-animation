@@ -1,10 +1,12 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { motion, AnimatePresence, useViewportScroll } from "framer-motion";
-import { getMovies, IGetMoviesResult } from "../api";
+import { getMovies, IGetMoviesResult } from "../Query/Movie";
 import { makeImagePath } from "../utils";
 import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import { ArrowLeftCircleFill } from "@styled-icons/bootstrap/ArrowLeftCircleFill";
+import { ArrowRightCircleFill } from "@styled-icons/bootstrap/ArrowRightCircleFill";
 
 const Wrapper = styled.div`
   background: black;
@@ -42,6 +44,13 @@ const Overview = styled.p`
 const Slider = styled.div`
   position: relative;
   top: -100px;
+`;
+
+const SliderName = styled.div`
+  font-size: 25px;
+  font-weight: bolder;
+  margin-bottom: 10px;
+  margin-left: 10px;
 `;
 
 const Row = styled(motion.div)`
@@ -124,6 +133,40 @@ const BigOverview = styled.p`
   color: ${(props) => props.theme.white.lighter};
 `;
 
+const RightSlideButton = styled(ArrowRightCircleFill)`
+  position: absolute;
+  height: 40px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto 5px;
+  z-index: 99;
+  opacity: 0.5;
+  cursor: pointer;
+  color: ${(props) => props.theme.white.darker};
+  &:hover {
+    color: ${(props) => props.theme.white.lighter};
+    opacity: 1;
+  }
+`;
+
+const LeftSlideButton = styled(ArrowLeftCircleFill)`
+  position: absolute;
+  height: 40px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto 5px;
+  z-index: 99;
+  opacity: 0.5;
+  cursor: pointer;
+  color: ${(props) => props.theme.white.darker};
+  &:hover {
+    color: ${(props) => props.theme.white.lighter};
+    opacity: 1;
+  }
+`;
+
 const rowVariants = {
   hidden: {
     x: window.outerWidth + 5,
@@ -166,31 +209,45 @@ const offset = 6;
 
 function Home() {
   const history = useHistory();
-  const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId");
+  const bigMovieMatch = useRouteMatch<{ movieId: string }>("/react-netflix/movies/:movieId");
   const { scrollY } = useViewportScroll();
   const { data, isLoading } = useQuery<IGetMoviesResult>(
     ["movies", "nowPlaying"],
     getMovies
   );
   const [index, setIndex] = useState(0);
+  const [back, setBack] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const incraseIndex = () => {
     if (data) {
       if (leaving) return;
       toggleLeaving();
+      setBack(false);
       const totalMovies = data.results.length - 1;
       const maxIndex = Math.floor(totalMovies / offset) - 1;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
+
+  const decraseIndex = () => {
+    if (data) {
+      if (leaving) return;
+      toggleLeaving();
+      setBack(true);
+      const totalMovies = data.results.length - 1;
+      const maxIndex = Math.floor(totalMovies / offset) - 1;
+      setIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+    }
+  };
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
-    history.push(`/movies/${movieId}`);
+    history.push(`/react-netflix/movies/${movieId}`);
   };
-  const onOverlayClick = () => history.push("/");
+  const onOverlayClick = () => history.push("/react-netflix");
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
     data?.results.find((movie) => movie.id === +bigMovieMatch.params.movieId);
+
   return (
     <Wrapper>
       {isLoading ? (
@@ -198,15 +255,16 @@ function Home() {
       ) : (
         <>
           <Banner
-            onClick={incraseIndex}
             bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}
           >
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
           <Slider>
-            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+            <SliderName>NOW PLAYING</SliderName>
+            <AnimatePresence custom={back} initial={false} onExitComplete={toggleLeaving}>
               <Row
+                custom={back}
                 variants={rowVariants}
                 initial="hidden"
                 animate="visible"
@@ -233,6 +291,8 @@ function Home() {
                       </Info>
                     </Box>
                   ))}
+                <LeftSlideButton onClick={incraseIndex} />
+                <RightSlideButton onClick={decraseIndex} />
               </Row>
             </AnimatePresence>
           </Slider>
